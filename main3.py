@@ -6,18 +6,30 @@
 import requests
 from bs4 import BeautifulSoup as bs
 
-response = requests.get("https://catalog-sadovod.ru/").text
+response = requests.get("https://www.labirint.ru/books/").text
 soup = bs(response, "html.parser")
 
-#grid-list
-categoryItems = soup.find("div", class_="grid-list")
+categoryItems = soup.find("div", class_="body-main-content-wrapper")
+pages = categoryItems.find_all("a", class_="pagination-number__text")
 
-items = categoryItems.find_all("div", class_="ut2-gl__item")
+maxPages = (int(pages[-1].text))
+
+def parsePage(page):
+    response1 = requests.get(f"https://www.labirint.ru/books/?page=1/").text
+    soup1 = bs(response1, "html.parser")
+    category = soup1.find("div", class_="products-row-outer")
+    items = category.find_all("div", class_="product-cover")
+
+    for item in items:
+        name = item.find("a", class_="product-title-link").text
+        print(name)
 
 
-for item in items:
-    #product-title
-    productTitle = item.find("a", class_="product-title")
+parsePage(1)
+
+'''
+for item in items1:
+    productTitle = item.find("a", class_="product-title-link")
 
     #price
     productPrice = item.find("span", class_="ty-price-num")
@@ -25,3 +37,4 @@ for item in items:
     #url
     url = productTitle.attrs["href"]
     print(f"Текст: {productTitle.text} | Цена: {productPrice.text}р | Ссылка: {url}")
+'''
