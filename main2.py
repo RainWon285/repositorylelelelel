@@ -10,3 +10,5 @@ for item in items:
     url = item.find("a").attrs["href"]
     print(f"{item.text} | {url}")
 
+
+
